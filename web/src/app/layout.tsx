@@ -1,0 +1,41 @@
+// web/src/app/layout.tsx
+
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
+import Link from 'next/link'
+import Search from '@/components/Search' // Import the new Search component
+
+const inter = Inter({ subsets: ['latin'] })
+
+export const metadata: Metadata = {
+  title: 'My Movie Reviews',
+  description: 'A collection of reviews on film and television.',
+}
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="en">
+      <body className={`${inter.className} bg-background text-foreground`}>
+        <header className="border-b border-border p-4 sticky top-0 bg-background/80 backdrop-blur-sm z-10">
+          {/* NEW: Updated header layout with flexbox */}
+          <div className="container mx-auto flex justify-between items-center">
+            <Link href="/" className="text-xl font-bold hover:text-secondary transition-colors">
+              Reviews
+            </Link>
+            
+            <Search /> {/* Add the Search component here */}
+          </div>
+        </header>
+
+        <div className="relative z-0">
+          <main>{children}</main>
+        </div>
+      </body>
+    </html>
+  )
+}
