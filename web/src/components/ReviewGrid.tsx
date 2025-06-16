@@ -35,7 +35,6 @@ const itemVariants = {
 export default function ReviewGrid({ reviews }: { reviews: Review[] }) {
   console.log("CLIENT-SIDE PROPS RECEIVED:", reviews);
   
-  // A guard clause in case props are empty, even though page.tsx should handle it.
   if (!reviews || reviews.length === 0) {
     return <p className="text-center p-4">No reviews to display.</p>;
   }
