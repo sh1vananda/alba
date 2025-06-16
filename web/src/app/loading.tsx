@@ -1,7 +1,7 @@
 // web/src/app/loading.tsx
 
 export default function Loading() {
-  const skeletonItems = Array.from({ length: 12 }); // Create 12 placeholder items
+  const skeletonItems = Array.from({ length: 8 });
 
   return (
     <div className="container mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">

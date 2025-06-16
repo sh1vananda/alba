@@ -29,7 +29,7 @@ export default defineType({
       type: 'image',
       description: 'Used for homepage grid and social sharing. Should be a vertical poster.',
       options: {
-        hotspot: true, // This is fantastic for frontend cropping control
+        hotspot: true, 
       },
       validation: (Rule) => Rule.required(),
     }),
@@ -41,7 +41,6 @@ export default defineType({
       options: {
         hotspot: true,
       },
-      // This field is optional
     }),
     defineField({
       name: 'releaseDate',
@@ -69,11 +68,10 @@ export default defineType({
     defineField({
       name: 'body',
       title: 'Body',
-      type: 'blockContent', // This is Sanity's rich text editor
+      type: 'blockContent',
     }),
   ],
 
-  // Enhanced Admin Preview
   preview: {
     select: {
       title: 'title',

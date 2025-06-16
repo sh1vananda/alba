@@ -50,7 +50,7 @@ export default function Search() {
   const handleSelection = (review: SearchableReview) => {
     if (review?.slug?.current) {
       router.push(`/reviews/${review.slug.current}`);
-      setQuery(''); // Clear input after navigation
+      setQuery('');
     }
   };
 
@@ -65,17 +65,14 @@ export default function Search() {
           </div>
           <Combobox.Input
             id="search-input"
-            // --- FIX #1: REMOVE the default focus outline ---
             className="w-full rounded-md border-0 bg-white/5 py-2 pl-10 pr-4 text-foreground ring-1 ring-inset ring-white/10 placeholder:text-secondary focus:ring-2 focus:ring-inset focus:ring-accent sm:text-sm sm:leading-6 transition focus:outline-none"
             placeholder="Search..."
             onChange={(event) => setQuery(event.target.value)}
             autoComplete="off"
-            // --- FIX #2: Clear query on blur for better dismiss behavior ---
             onBlur={() => setQuery('')}
           />
         </div>
 
-        {/* --- FIX #2: USE Headless UI's Transition for perfect dismiss/animation --- */}
         <Transition
           as={Fragment}
           show={showResults}

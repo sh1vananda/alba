@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import Link from 'next/link'
-import Search from '@/components/Search' // Import the new Search component
+import Search from '@/components/Search'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -22,13 +22,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} bg-background text-foreground`}>
         <header className="border-b border-border p-4 sticky top-0 bg-background/80 backdrop-blur-sm z-10">
-          {/* NEW: Updated header layout with flexbox */}
           <div className="container mx-auto flex justify-between items-center">
             <Link href="/" className="text-xl font-bold hover:text-secondary transition-colors">
               Reviews
             </Link>
             
-            <Search /> {/* Add the Search component here */}
+            <Search />
           </div>
         </header>
 
