@@ -1,4 +1,5 @@
 // web/src/app/genres/[slug]/page.tsx
+
 import { client } from '@/lib/sanity.client'
 import { groq } from 'next-sanity'
 import { notFound } from 'next/navigation'
@@ -17,6 +18,10 @@ interface Review {
   moviePoster: SanityImageSource;
 }
 
+type PageProps = {
+  params: { slug: string };
+};
+
 const genreQuery = groq`*[_type == "genre" && slug.current == $slug][0]{ title }`
 const reviewsByGenreQuery = groq`
   *[_type == "review" && references(*[_type=="genre" && slug.current == $slug]._id)] | order(releaseDate desc){
@@ -26,13 +31,13 @@ const reviewsByGenreQuery = groq`
     moviePoster
   }
 `
+
 export async function generateMetadata(
-  { params }: { params: { slug: string } },
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  parent: ResolvingMetadata
+  { params }: PageProps,
+  // We can safely remove the disable comment. The underscore is enough for the default linter.
+  _parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const { slug } = params;
-  const genre: Genre = await client.fetch(genreQuery, { slug });
+  const genre: Genre = await client.fetch(genreQuery, { slug: params.slug });
   if (!genre) return { title: "Not Found" };
   
   return {
@@ -41,15 +46,14 @@ export async function generateMetadata(
   }
 }
 
-export default async function GenrePage({ params }: { params: { slug: string } }) {
-  const { slug } = params;
-  const genre: Genre = await client.fetch(genreQuery, { slug });
+export default async function GenrePage({ params }: PageProps) {
+  const genre: Genre = await client.fetch(genreQuery, { slug: params.slug });
 
   if (!genre) {
     notFound();
   }
 
-  const reviews: Review[] = await client.fetch(reviewsByGenreQuery, { slug });
+  const reviews: Review[] = await client.fetch(reviewsByGenreQuery, { slug: params.slug });
 
   return (
     <div className="container mx-auto p-4 md:p-8">
