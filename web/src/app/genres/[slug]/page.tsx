@@ -5,7 +5,7 @@ import { groq } from 'next-sanity'
 import { notFound } from 'next/navigation'
 import { SanityImageSource } from '@sanity/image-url/lib/types/types'
 import ReviewGrid from '@/components/ReviewGrid'
-import type { Metadata } from 'next'
+import type { Metadata, ResolvingMetadata } from 'next'
 
 interface Genre {
   title: string;
@@ -18,7 +18,7 @@ interface Review {
   moviePoster: SanityImageSource;
 }
 
-type Props = {
+type PageProps = {
   params: { slug: string };
 }
 
@@ -32,16 +32,21 @@ const reviewsByGenreQuery = groq`
   }
 `
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata(
+  { params }: PageProps,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _parent: ResolvingMetadata 
+): Promise<Metadata> {
   const genre: Genre = await client.fetch(genreQuery, { slug: params.slug });
   if (!genre) return { title: "Not Found" };
+  
   return {
     title: `${genre.title} Reviews`,
     description: `A collection of reviews in the ${genre.title} genre.`,
   }
 }
 
-export default async function GenrePage({ params }: Props) {
+export default async function GenrePage({ params }: PageProps) {
   const genre: Genre = await client.fetch(genreQuery, { slug: params.slug });
 
   if (!genre) {
