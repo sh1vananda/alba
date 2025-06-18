@@ -1,5 +1,3 @@
-// web/src/app/reviews/[slug]/page.tsx
-
 import { client, urlFor } from '@/lib/sanity.client'
 import { groq } from 'next-sanity'
 import { notFound } from 'next/navigation'
@@ -9,6 +7,7 @@ import Link from 'next/link'
 import { SanityImageSource } from '@sanity/image-url/lib/types/types'
 import { PortableTextBlock } from 'sanity'
 import type { Metadata } from 'next'
+import RadarChart from '@/components/RadarChart';
 
 interface FullReview {
   _id: string;
@@ -20,6 +19,16 @@ interface FullReview {
   heroImage?: SanityImageSource;
   body: PortableTextBlock[];
   genres: Array<{ _id: string, title: string, slug: { current: string } | null }>;
+  storytelling?: number;
+  character?: number;
+  visuals?: number;
+  sound?: number;
+  performances?: number;
+  direction?: number;
+  impact?: number;
+  themes?: number;
+  execution?: number;
+  originality?: number;
 }
 
 interface RelatedReview {
@@ -36,14 +45,7 @@ type Props = {
 export const revalidate = 60;
 
 const reviewQuery = groq`*[_type == "review" && slug.current == $slug][0]{
-  _id,
-  title,
-  slug,
-  releaseDate,
-  score,
-  moviePoster,
-  heroImage,
-  body,
+  ...,
   "genres": genres[]->{_id, title, slug}
 }`
 
@@ -61,10 +63,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ReviewPage({ params }: Props) {
   const review: FullReview = await client.fetch(reviewQuery, { slug: params.slug })
+  if (!review) notFound();
 
-  if (!review) {
-    notFound();
-  }
+  const attributeData = [
+    review.storytelling || 0,
+    review.character || 0,
+    review.visuals || 0,
+    review.sound || 0,
+    review.performances || 0,
+    review.direction || 0,
+    review.impact || 0,
+    review.themes || 0,
+    review.execution || 0,
+    review.originality || 0,
+  ];
+  const hasAttributeData = attributeData.some(score => score > 0);
 
   const relatedByGenreQuery = groq`
     *[_type == "review" && slug.current != $currentSlug && count((genres[]->_id)[@ in $genreIds]) > 0][0...3]{
@@ -95,7 +108,7 @@ export default async function ReviewPage({ params }: Props) {
   return (
     <>
       <div className="container mx-auto max-w-5xl p-4 md:p-8">
-        <div className="relative h-[60vh] rounded-lg overflow-hidden flex items-end p-8 text-white shadow-2xl mb-12">
+        <div className="relative h-[60vh] rounded-lg overflow-hidden flex items-end p-8 text-white shadow-2xl">
           <div className="absolute inset-0">
             <Image
               src={urlFor(imageToDisplay).url()}
@@ -114,36 +127,37 @@ export default async function ReviewPage({ params }: Props) {
               <span>Score: {review.score}/10</span>
             </div>
             <div className="flex flex-wrap items-center gap-2 mt-4">
-              {review.genres?.map(genre => (
-                genre && genre.slug && (
-                  <Link
-                    key={genre._id}
-                    href={`/genres/${genre.slug.current}`}
-                    className="bg-white/10 text-foreground px-3 py-1 rounded-full text-sm hover:bg-white/20 transition-colors"
-                  >
-                    {genre.title}
-                  </Link>
-                )
+              {review.genres?.map(genre => genre?.slug && (
+                <Link key={genre._id} href={`/genres/${genre.slug.current}`} className="bg-white/10 text-foreground px-3 py-1 rounded-full text-sm hover:bg-white/20 transition-colors">
+                  {genre.title}
+                </Link>
               ))}
             </div>
           </div>
         </div>
+      </div>
 
+      {hasAttributeData && (
+        <div className="container mx-auto max-w-3xl mt-4 mb-12 px-4">
+          <div className="bg-background/50 border border-border p-4 rounded-lg">
+            <RadarChart data={attributeData} />
+          </div>
+        </div>
+      )}
+
+      <div className="container mx-auto max-w-5xl px-4 md:px-8">
         <div className="prose prose-lg prose-invert max-w-3xl mx-auto">
           <PortableText value={review.body} />
         </div>
       </div>
-
+      
       {relatedReviews && relatedReviews.length > 0 && (
         <div className="border-t border-border mt-12 py-12">
           <div className="container mx-auto max-w-5xl px-4">
             <h2 className="text-xl font-bold mb-5 text-left">Read Next</h2>
-            
             <div className="grid grid-flow-col auto-cols-max gap-4 justify-left">
-              
               {relatedReviews.map(related => (
                 <Link key={related._id} href={`/reviews/${related.slug.current}`} className="group">
-                  
                   <div className="w-40"> 
                     <div className="overflow-hidden rounded-md aspect-[2/3] bg-gray-800">
                       <Image
@@ -155,7 +169,6 @@ export default async function ReviewPage({ params }: Props) {
                       />
                     </div>
                   </div>
-
                 </Link>
               ))}
             </div>
