@@ -7,10 +7,14 @@ import { SanityImageSource } from '@sanity/image-url/lib/types/types'
 import ReviewGrid from '@/components/ReviewGrid'
 import type { Metadata, ResolvingMetadata } from 'next'
 
+// --- Interfaces and Props ---
+
+// Interface for the fetched Genre data
 interface Genre {
   title: string;
 }
 
+// Interface for the fetched Review data
 interface Review {
   _id: string;
   title: string;
@@ -18,10 +22,14 @@ interface Review {
   moviePoster: SanityImageSource;
 }
 
-type PageProps = {
+// Type specifically for the props of the Page and generateMetadata functions
+// This is the most critical part of the fix.
+type Props = {
   params: { slug: string };
-}
+  searchParams: { [key: string]: string | string[] | undefined };
+};
 
+// --- Queries ---
 const genreQuery = groq`*[_type == "genre" && slug.current == $slug][0]{ title }`
 const reviewsByGenreQuery = groq`
   *[_type == "review" && references(*[_type=="genre" && slug.current == $slug]._id)] | order(releaseDate desc){
@@ -32,10 +40,11 @@ const reviewsByGenreQuery = groq`
   }
 `
 
+// --- generateMetadata function with the explicit Props type ---
 export async function generateMetadata(
-  { params }: PageProps,
+  { params }: Props,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _parent: ResolvingMetadata 
+  parent: ResolvingMetadata
 ): Promise<Metadata> {
   const genre: Genre = await client.fetch(genreQuery, { slug: params.slug });
   if (!genre) return { title: "Not Found" };
@@ -46,7 +55,8 @@ export async function generateMetadata(
   }
 }
 
-export default async function GenrePage({ params }: PageProps) {
+// --- Main Page Component with the explicit Props type ---
+export default async function GenrePage({ params }: Props) {
   const genre: Genre = await client.fetch(genreQuery, { slug: params.slug });
 
   if (!genre) {
