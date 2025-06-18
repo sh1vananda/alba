@@ -1,3 +1,5 @@
+// web/src/app/reviews/[slug]/page.tsx
+
 import { client, urlFor } from '@/lib/sanity.client'
 import { groq } from 'next-sanity'
 import { notFound } from 'next/navigation'
@@ -7,8 +9,9 @@ import Link from 'next/link'
 import { SanityImageSource } from '@sanity/image-url/lib/types/types'
 import { PortableTextBlock } from 'sanity'
 import type { Metadata } from 'next'
-import RadarChart from '@/components/RadarChart';
+import RadarChart from '@/components/RadarChart'; // RESTORED IMPORT
 
+// --- Interfaces ---
 interface FullReview {
   _id: string;
   title: string;
@@ -31,11 +34,21 @@ interface FullReview {
   originality?: number;
 }
 
-interface RelatedReview {
+interface FingerprintReview {
   _id: string;
   title: string;
   slug: { current: string };
   moviePoster: SanityImageSource;
+  storytelling?: number;
+  character?: number;
+  visuals?: number;
+  sound?: number;
+  performances?: number;
+  direction?: number;
+  impact?: number;
+  themes?: number;
+  execution?: number;
+  originality?: number;
 }
 
 type Props = {
@@ -44,15 +57,34 @@ type Props = {
 
 export const revalidate = 60;
 
+// --- Queries ---
 const reviewQuery = groq`*[_type == "review" && slug.current == $slug][0]{
   ...,
   "genres": genres[]->{_id, title, slug}
 }`
 
+const allFingerprintsQuery = groq`*[_type == "review"]{
+  _id,
+  title,
+  slug,
+  moviePoster,
+  storytelling, character, visuals, sound, performances, direction,
+  impact, themes, execution, originality
+}`
+
+// --- Helper Function ---
+const calculateEuclideanDistance = (fp1: number[], fp2: number[]): number => {
+  let sumOfSquares = 0;
+  for (let i = 0; i < fp1.length; i++) {
+    sumOfSquares += (fp1[i] - fp2[i]) ** 2;
+  }
+  return Math.sqrt(sumOfSquares);
+};
+
+// --- Metadata ---
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const review: FullReview = await client.fetch(reviewQuery, { slug: params.slug });
   if (!review) return { title: "Not Found" };
-
   const imageToUse = review.heroImage || review.moviePoster;
   return {
     title: `${review.title} | MyReviewSite`,
@@ -61,52 +93,46 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
+// --- Main Page Component ---
 export default async function ReviewPage({ params }: Props) {
-  const review: FullReview = await client.fetch(reviewQuery, { slug: params.slug })
+  const [review, allReviews]: [FullReview, FingerprintReview[]] = await Promise.all([
+    client.fetch(reviewQuery, { slug: params.slug }),
+    client.fetch(allFingerprintsQuery)
+  ]);
+  
   if (!review) notFound();
 
-  const attributeData = [
-    review.storytelling || 0,
-    review.character || 0,
-    review.visuals || 0,
-    review.sound || 0,
-    review.performances || 0,
-    review.direction || 0,
-    review.impact || 0,
-    review.themes || 0,
-    review.execution || 0,
+  // RESTORED: Prepare data for the radar chart
+  const currentFingerprint = [
+    review.storytelling || 0, review.character || 0, review.visuals || 0,
+    review.sound || 0, review.performances || 0, review.direction || 0,
+    review.impact || 0, review.themes || 0, review.execution || 0,
     review.originality || 0,
   ];
-  const hasAttributeData = attributeData.some(score => score > 0);
+  const hasAttributeData = currentFingerprint.some(score => score > 0);
 
-  const relatedByGenreQuery = groq`
-    *[_type == "review" && slug.current != $currentSlug && count((genres[]->_id)[@ in $genreIds]) > 0][0...3]{
-      _id, title, slug, moviePoster
-    } | order(releaseDate desc)
-  `;
-  let relatedReviews: RelatedReview[] = await client.fetch(relatedByGenreQuery, {
-    currentSlug: review.slug.current,
-    genreIds: review.genres?.map(g => g._id) || [],
-  });
+  // Calculate Similar Reviews
+  const similarReviews = allReviews
+    .filter(otherReview => otherReview._id !== review._id)
+    .map(otherReview => {
+      const otherFingerprint = [
+        otherReview.storytelling || 0, otherReview.character || 0, otherReview.visuals || 0,
+        otherReview.sound || 0, otherReview.performances || 0, otherReview.direction || 0,
+        otherReview.impact || 0, otherReview.themes || 0, otherReview.execution || 0,
+        otherReview.originality || 0,
+      ];
+      const distance = calculateEuclideanDistance(currentFingerprint, otherFingerprint);
+      return { ...otherReview, distance };
+    })
+    .sort((a, b) => a.distance - b.distance)
+    .slice(0, 3);
 
-  const needed = 3 - relatedReviews.length;
-  if (needed > 0) {
-    const recentReviewsQuery = groq`
-      *[_type == "review" && !(_id in $excludeIds)][0...${needed}]{
-        _id, title, slug, moviePoster
-      } | order(releaseDate desc)
-    `;
-    const excludeIds = [review._id, ...relatedReviews.map(r => r._id)];
-    const recentReviews: RelatedReview[] = await client.fetch(recentReviewsQuery, {
-      excludeIds: excludeIds,
-    });
-    relatedReviews = [...relatedReviews, ...recentReviews];
-  }
-
+  // RESTORED: Variable for the hero image
   const imageToDisplay = review.heroImage || review.moviePoster;
 
   return (
     <>
+      {/* RESTORED: Act 1: The Header */}
       <div className="container mx-auto max-w-5xl p-4 md:p-8">
         <div className="relative h-[60vh] rounded-lg overflow-hidden flex items-end p-8 text-white shadow-2xl">
           <div className="absolute inset-0">
@@ -137,26 +163,29 @@ export default async function ReviewPage({ params }: Props) {
         </div>
       </div>
 
+      {/* RESTORED: Act 2: The Visual Fingerprint */}
       {hasAttributeData && (
         <div className="container mx-auto max-w-3xl mt-4 mb-12 px-4">
           <div className="bg-background/50 border border-border p-4 rounded-lg">
-            <RadarChart data={attributeData} />
+            <RadarChart data={currentFingerprint} />
           </div>
         </div>
       )}
 
+      {/* Act 3: The Written Review */}
       <div className="container mx-auto max-w-5xl px-4 md:px-8">
         <div className="prose prose-lg prose-invert max-w-3xl mx-auto">
           <PortableText value={review.body} />
         </div>
       </div>
       
-      {relatedReviews && relatedReviews.length > 0 && (
+      {/* Act 4: Similar Fingerprints Section */}
+      {similarReviews && similarReviews.length > 0 && (
         <div className="border-t border-border mt-12 py-12">
           <div className="container mx-auto max-w-5xl px-4">
-            <h2 className="text-xl font-bold mb-5 text-left">Read Next</h2>
-            <div className="grid grid-flow-col auto-cols-max gap-4 justify-left">
-              {relatedReviews.map(related => (
+            <h2 className="text-xl font-bold mb-5 text-center">Similar Fingerprints</h2>
+            <div className="grid grid-flow-col auto-cols-max gap-4 justify-center">
+              {similarReviews.map(related => (
                 <Link key={related._id} href={`/reviews/${related.slug.current}`} className="group">
                   <div className="w-40"> 
                     <div className="overflow-hidden rounded-md aspect-[2/3] bg-gray-800">
@@ -176,5 +205,5 @@ export default async function ReviewPage({ params }: Props) {
         </div>
       )}
     </>
-  )
+  );
 }
