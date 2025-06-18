@@ -41,7 +41,7 @@ export async function generateMetadata(
   if (!genre) return { title: "Not Found" };
   
   return {
-    title: `${genre.title} Reviews`,
+    title: `${genre.title} Reviews | Boovie`,
     description: `A collection of reviews in the ${genre.title} genre.`,
   }
 }

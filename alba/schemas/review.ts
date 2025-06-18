@@ -2,7 +2,7 @@
 
 import { defineField, defineType } from 'sanity'
 
-// A clean way to define all attribute fields to avoid repetition
+// --- Visual Fingerprint Attributes ---
 const attributeFields = [
   { name: 'storytelling', title: 'Storytelling & Narrative' },
   { name: 'character', title: 'Character Development' },
@@ -20,7 +20,24 @@ const attributeFields = [
   type: 'number',
   description: 'A score from 0 to 10.',
   validation: Rule => Rule.min(0).max(10),
-  fieldset: 'attributes' // This groups them all together in the UI
+  fieldset: 'attributes'
+}));
+
+// --- Boo Gauge Sub-Attributes ---
+const booGaugeFields = [
+  { name: 'dread', title: 'Dread & Suspense' },
+  { name: 'jumpScares', title: 'Jump Scares' },
+  { name: 'gore', title: 'Gore & Disturbing Imagery' },
+  { name: 'psychological', title: 'Psychological Horror' },
+  { name: 'atmosphere', title: 'Atmosphere' },
+  { name: 'lingeringEffect', title: 'Lingering Effect' },
+].map(attr => defineField({
+  name: attr.name,
+  title: attr.title,
+  type: 'number',
+  description: 'A score from 0 to 10.',
+  validation: Rule => Rule.min(0).max(10),
+  fieldset: 'booGauge'
 }));
 
 
@@ -29,15 +46,21 @@ export default defineType({
   title: 'Review',
   type: 'document',
 
-  // Defines the collapsible group in the Sanity Studio UI
+  // --- Fieldset Definitions ---
   fieldsets: [
     {
       name: 'attributes',
-      title: 'Review Attributes Fingerprint',
+      title: 'Visual Fingerprint (Radar Chart)',
+      options: { collapsible: true, collapsed: false }
+    },
+    {
+      name: 'booGauge',
+      title: 'Boo Gauge (Horror-Specific)',
       options: { collapsible: true, collapsed: false }
     }
   ],
   
+  // --- All Fields ---
   fields: [
     defineField({
       name: 'title',
@@ -49,10 +72,7 @@ export default defineType({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
-      options: {
-        source: 'title',
-        maxLength: 96,
-      },
+      options: { source: 'title', maxLength: 96 },
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -87,9 +107,17 @@ export default defineType({
       description: 'The final, single score from 0 to 10.',
       validation: (Rule) => Rule.required().min(0).max(10),
     }),
+    defineField({
+      name: 'mainBooGauge',
+      title: 'Main Boo Gauge Score',
+      type: 'number',
+      description: 'The primary horror score from 0 to 10. This is for the large circular gauge.',
+      validation: Rule => Rule.min(0).max(10),
+      fieldset: 'booGauge'
+    }),
     
-    // The "..." spread operator inserts all 10 attribute fields here
     ...attributeFields,
+    ...booGaugeFields,
 
     defineField({
       name: 'genres',
@@ -104,7 +132,7 @@ export default defineType({
     }),
   ],
   
-  // Enhanced Admin Preview
+  // --- Admin Preview Settings ---
   preview: {
     select: {
       title: 'title',

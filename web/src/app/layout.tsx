@@ -9,8 +9,8 @@ import Search from '@/components/Search'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'My Movie Reviews',
-  description: 'A collection of reviews on film and television.',
+  title: 'Boovie | Horror Movie Reviews',
+  description: 'Horror movie reviews, ratings, and recommendations',
 }
 
 export default function RootLayout({
@@ -24,7 +24,7 @@ export default function RootLayout({
         <header className="border-b border-border p-4 sticky top-0 bg-background/80 backdrop-blur-sm z-10">
           <div className="container mx-auto flex justify-between items-center">
             <Link href="/" className="text-xl font-bold hover:text-secondary transition-colors">
-              Reviews
+              Boovie
             </Link>
             
             <Search />

@@ -9,9 +9,9 @@ import Link from 'next/link'
 import { SanityImageSource } from '@sanity/image-url/lib/types/types'
 import { PortableTextBlock } from 'sanity'
 import type { Metadata } from 'next'
-import RadarChart from '@/components/RadarChart'; // RESTORED IMPORT
+import RadarChart from '@/components/RadarChart';
+import BooGauge, { BooGaugeData } from '@/components/BooGauge';
 
-// --- Interfaces ---
 interface FullReview {
   _id: string;
   title: string;
@@ -32,6 +32,13 @@ interface FullReview {
   themes?: number;
   execution?: number;
   originality?: number;
+  mainBooGauge?: number;
+  dread?: number;
+  jumpScares?: number;
+  gore?: number;
+  psychological?: number;
+  atmosphere?: number;
+  lingeringEffect?: number;
 }
 
 interface FingerprintReview {
@@ -57,22 +64,9 @@ type Props = {
 
 export const revalidate = 60;
 
-// --- Queries ---
-const reviewQuery = groq`*[_type == "review" && slug.current == $slug][0]{
-  ...,
-  "genres": genres[]->{_id, title, slug}
-}`
+const reviewQuery = groq`*[_type == "review" && slug.current == $slug][0]{ ..., "genres": genres[]->{_id, title, slug} }`;
+const allFingerprintsQuery = groq`*[_type == "review"]{ _id, title, slug, moviePoster, storytelling, character, visuals, sound, performances, direction, impact, themes, execution, originality }`;
 
-const allFingerprintsQuery = groq`*[_type == "review"]{
-  _id,
-  title,
-  slug,
-  moviePoster,
-  storytelling, character, visuals, sound, performances, direction,
-  impact, themes, execution, originality
-}`
-
-// --- Helper Function ---
 const calculateEuclideanDistance = (fp1: number[], fp2: number[]): number => {
   let sumOfSquares = 0;
   for (let i = 0; i < fp1.length; i++) {
@@ -81,19 +75,17 @@ const calculateEuclideanDistance = (fp1: number[], fp2: number[]): number => {
   return Math.sqrt(sumOfSquares);
 };
 
-// --- Metadata ---
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const review: FullReview = await client.fetch(reviewQuery, { slug: params.slug });
   if (!review) return { title: "Not Found" };
   const imageToUse = review.heroImage || review.moviePoster;
   return {
-    title: `${review.title} | MyReviewSite`,
-    description: `Read our full review of ${review.title}. Score: ${review.score}/10.`,
+    title: `${review.title} | Boovie`,
+    description: `A horror review for ${review.title}. Our score: ${review.score}/10.`,
     openGraph: { images: [urlFor(imageToUse).width(1200).height(630).fit('crop').url()] },
   }
 }
 
-// --- Main Page Component ---
 export default async function ReviewPage({ params }: Props) {
   const [review, allReviews]: [FullReview, FingerprintReview[]] = await Promise.all([
     client.fetch(reviewQuery, { slug: params.slug }),
@@ -102,16 +94,26 @@ export default async function ReviewPage({ params }: Props) {
   
   if (!review) notFound();
 
-  // RESTORED: Prepare data for the radar chart
-  const currentFingerprint = [
+  const attributeData = [
     review.storytelling || 0, review.character || 0, review.visuals || 0,
     review.sound || 0, review.performances || 0, review.direction || 0,
     review.impact || 0, review.themes || 0, review.execution || 0,
     review.originality || 0,
   ];
-  const hasAttributeData = currentFingerprint.some(score => score > 0);
+  const hasAttributeData = attributeData.some(score => score > 0);
 
-  // Calculate Similar Reviews
+  const booGaugeData: BooGaugeData = {
+    mainBooGauge: review.mainBooGauge,
+    dread: review.dread,
+    jumpScares: review.jumpScares,
+    gore: review.gore,
+    psychological: review.psychological,
+    atmosphere: review.atmosphere,
+    lingeringEffect: review.lingeringEffect,
+  };
+  const hasBooGaugeData = typeof review.mainBooGauge === 'number';
+
+  const currentFingerprint = attributeData;
   const similarReviews = allReviews
     .filter(otherReview => otherReview._id !== review._id)
     .map(otherReview => {
@@ -127,12 +129,10 @@ export default async function ReviewPage({ params }: Props) {
     .sort((a, b) => a.distance - b.distance)
     .slice(0, 3);
 
-  // RESTORED: Variable for the hero image
   const imageToDisplay = review.heroImage || review.moviePoster;
 
   return (
     <>
-      {/* RESTORED: Act 1: The Header */}
       <div className="container mx-auto max-w-5xl p-4 md:p-8">
         <div className="relative h-[60vh] rounded-lg overflow-hidden flex items-end p-8 text-white shadow-2xl">
           <div className="absolute inset-0">
@@ -163,23 +163,42 @@ export default async function ReviewPage({ params }: Props) {
         </div>
       </div>
 
-      {/* RESTORED: Act 2: The Visual Fingerprint */}
-      {hasAttributeData && (
-        <div className="container mx-auto max-w-3xl mt-4 mb-12 px-4">
-          <div className="bg-background/50 border border-border p-4 rounded-lg">
-            <RadarChart data={currentFingerprint} />
+      <div className="container mx-auto max-w-5xl my-12 px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-stretch">
+          
+          <div className="bg-background/50 border border-border p-4 rounded-lg flex flex-col">
+            <h3 className="text-xl font-bold text-center mb-4 flex-shrink-0">Visual Fingerprint</h3>
+            {hasAttributeData ? (
+              <div className="relative flex-grow">
+                <RadarChart data={attributeData} />
+              </div>
+            ) : (
+              <div className="flex-grow flex items-center justify-center text-secondary">
+                No Fingerprint Data
+              </div>
+            )}
           </div>
-        </div>
-      )}
 
-      {/* Act 3: The Written Review */}
-      <div className="container mx-auto max-w-5xl px-4 md:px-8">
+          <div className="bg-background/50 border border-border p-6 rounded-lg flex flex-col">
+            <h3 className="text-xl font-bold text-center mb-6 flex-shrink-0">Boo Gauge</h3>
+            {hasBooGaugeData ? (
+              <BooGauge data={booGaugeData} />
+            ) : (
+              <div className="flex-grow flex items-center justify-center text-secondary">
+                No Boo Gauge Data
+              </div>
+            )}
+          </div>
+          
+        </div>
+      </div>
+
+      <div className="container mx-auto max-w-5xl px-4 md:p-8 pt-0">
         <div className="prose prose-lg prose-invert max-w-3xl mx-auto">
           <PortableText value={review.body} />
         </div>
       </div>
       
-      {/* Act 4: Similar Fingerprints Section */}
       {similarReviews && similarReviews.length > 0 && (
         <div className="border-t border-border mt-12 py-12">
           <div className="container mx-auto max-w-5xl px-4">
