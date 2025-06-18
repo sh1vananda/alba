@@ -8,7 +8,7 @@ import blockContent from './schemas/blockContent'
 
 export default defineConfig({
   name: 'default',
-  title: 'alba',
+  title: 'Anatomy of a Scream | Studio',
 
   projectId: 'wdir2d6w',
   dataset: 'production',

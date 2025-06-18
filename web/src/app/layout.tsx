@@ -9,7 +9,7 @@ import Search from '@/components/Search'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Boovie | Horror Movie Reviews',
+  title: 'Anatomy of a Scream',
   description: 'Horror movie reviews, ratings, and recommendations',
 }
 
@@ -24,7 +24,7 @@ export default function RootLayout({
         <header className="border-b border-border p-4 sticky top-0 bg-background/80 backdrop-blur-sm z-10">
           <div className="container mx-auto flex justify-between items-center">
             <Link href="/" className="text-xl font-bold hover:text-secondary transition-colors">
-              Boovie
+              Anatomy of a Scream
             </Link>
             
             <Search />

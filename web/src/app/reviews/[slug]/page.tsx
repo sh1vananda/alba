@@ -80,7 +80,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!review) return { title: "Not Found" };
   const imageToUse = review.heroImage || review.moviePoster;
   return {
-    title: `${review.title} | Boovie`,
+    title: `${review.title} | Anatomy of a Scream`,
     description: `A horror review for ${review.title}. Our score: ${review.score}/10.`,
     openGraph: { images: [urlFor(imageToUse).width(1200).height(630).fit('crop').url()] },
   }
