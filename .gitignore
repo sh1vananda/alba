@@ -1,1 +1,4 @@
 /web/.env.local
+
+/web/node_modules
+/web/package-lock.json
