@@ -17,6 +17,22 @@ module.exports = {
         sans: ['var(--font-inter)', 'sans-serif'],
         heading: ['var(--font-bebas-neue)', 'sans-serif'],
       },
+      typography: ({ theme }) => ({
+        DEFAULT: {
+          css: {
+            p: {
+              textAlign: 'justify',
+            },
+          },
+        },
+        invert: {
+            css: {
+                p: {
+                    textAlign: 'justify',
+                },
+            },
+        },
+      }),
     },
   },
   plugins: [
