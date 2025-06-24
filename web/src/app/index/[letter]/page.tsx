@@ -50,14 +50,14 @@ export default async function IndexPage({ params }: Props) {
     .sort((a, b) => a.title.localeCompare(b.title));
 
   return (
-    <div className="container mx-auto p-4 md:p-8">
+    <div className="container mx-auto p-4 md-p-8">
       <h1 className="text-4xl font-heading tracking-wider mb-8">
         <span className="text-secondary font-sans text-3xl">Index:</span> {letter.toUpperCase()}
       </h1>
       {reviews && reviews.length > 0 ? (
         <ReviewGrid reviews={reviews} />
       ) : (
-        <p className="text-secondary">No reviews found starting with the letter "{letter.toUpperCase()}".</p>
+        <p className="text-secondary">No reviews found starting with the letter '{letter.toUpperCase()}'.</p>
       )}
     </div>
   )
