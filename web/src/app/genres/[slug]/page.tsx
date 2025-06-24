@@ -34,7 +34,6 @@ const reviewsByGenreQuery = groq`
 
 export async function generateMetadata(
   { params }: PageProps,
-  // We can safely remove the disable comment. The underscore is enough for the default linter.
   _parent: ResolvingMetadata
 ): Promise<Metadata> {
   const genre: Genre = await client.fetch(genreQuery, { slug: params.slug });
@@ -57,8 +56,8 @@ export default async function GenrePage({ params }: PageProps) {
 
   return (
     <div className="container mx-auto p-4 md:p-8">
-      <h1 className="text-4xl font-bold mb-8">
-        <span className="text-secondary">Genre:</span> {genre.title}
+      <h1 className="text-4xl font-heading tracking-wider mb-8">
+        <span className="text-secondary font-sans">Genre:</span> {genre.title}
       </h1>
       {reviews && reviews.length > 0 ? (
         <ReviewGrid reviews={reviews} />

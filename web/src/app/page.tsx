@@ -36,8 +36,8 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="container mx-auto p-4 md:p-8 text-center">
-      <h1 className="text-4xl font-bold mb-8">Recently Autopsied</h1>
+    <div className="container mx-auto p-4 md:p-8">
+      <h1 className="text-4xl font-heading tracking-wider mb-8">Recently Autopsied</h1>
       <ReviewGrid reviews={reviews} />
     </div>
   );

@@ -146,7 +146,7 @@ export default async function ReviewPage({ params }: Props) {
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent" />
           </div>
           <div className="relative z-10">
-            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter">{review.title}</h1>
+            <h1 className="text-5xl md:text-7xl font-heading tracking-wider font-normal">{review.title}</h1>
             <div className="flex items-center gap-4 mt-2 text-lg">
               <span>{new Date(review.releaseDate).getFullYear()}</span>
               <span className="text-secondary">•</span>
@@ -167,7 +167,7 @@ export default async function ReviewPage({ params }: Props) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-stretch">
           
           <div className="bg-background/50 border border-border p-4 rounded-lg flex flex-col">
-            <h3 className="text-xl font-bold text-center mb-4 flex-shrink-0">Visual Fingerprint</h3>
+            <h3 className="text-2xl font-heading text-center mb-4 flex-shrink-0">Visual Fingerprint</h3>
             {hasAttributeData ? (
               <div className="relative flex-grow">
                 <RadarChart data={attributeData} />
@@ -180,7 +180,7 @@ export default async function ReviewPage({ params }: Props) {
           </div>
 
           <div className="bg-background/50 border border-border p-6 rounded-lg flex flex-col">
-            <h3 className="text-xl font-bold text-center mb-6 flex-shrink-0">Boo Gauge</h3>
+            <h3 className="text-2xl font-heading text-center mb-6 flex-shrink-0">Boo Gauge</h3>
             {hasBooGaugeData ? (
               <BooGauge data={booGaugeData} />
             ) : (
@@ -202,7 +202,7 @@ export default async function ReviewPage({ params }: Props) {
       {similarReviews && similarReviews.length > 0 && (
         <div className="border-t border-border mt-12 py-12">
           <div className="container mx-auto max-w-5xl px-4">
-            <h2 className="text-xl font-bold mb-5 text-center">Similar Fingerprints</h2>
+            <h2 className="text-3xl font-heading tracking-wider text-center mb-5">Similar Fingerprints</h2>
             <div className="grid grid-flow-col auto-cols-max gap-4 justify-center">
               {similarReviews.map(related => (
                 <Link key={related._id} href={`/reviews/${related.slug.current}`} className="group">

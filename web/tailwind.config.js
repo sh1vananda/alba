@@ -12,7 +12,11 @@ module.exports = {
         secondary: '#A0A0A0',
         accent: '#FFFFFF',
         border: 'rgba(255, 255, 255, 0.1)',
-      }
+      },
+      fontFamily: {
+        sans: ['var(--font-inter)', 'sans-serif'],
+        heading: ['var(--font-bebas-neue)', 'sans-serif'],
+      },
     },
   },
   plugins: [
