@@ -57,7 +57,11 @@ export default async function IndexPage({ params }: Props) {
       {reviews && reviews.length > 0 ? (
         <ReviewGrid reviews={reviews} />
       ) : (
-        <p className="text-secondary">No reviews found starting with the letter '{letter.toUpperCase()}'.</p>
+        <p className="text-secondary">
+          No reviews found starting with the letter {'"'}
+          {letter.toUpperCase()}
+          {'"'}.
+        </p>
       )}
     </div>
   )
