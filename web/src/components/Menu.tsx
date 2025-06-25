@@ -56,7 +56,7 @@ export default function Menu() {
                 leaveFrom="translate-x-0" 
                 leaveTo="translate-x-full"
               >
-                <Dialog.Panel className="w-full max-w-sm transform overflow-hidden bg-background p-6 text-left align-middle shadow-xl transition-all border-l border-border"> {/* Use border-l for left border */}
+                <Dialog.Panel className="w-full max-w-sm transform overflow-hidden bg-background p-6 text-left align-middle shadow-xl transition-all border-l border-border">
                   <div className="flex justify-between items-center mb-8">
                     <Dialog.Title as="h3" className="text-2xl font-bold text-accent">
                       Explore
@@ -67,7 +67,30 @@ export default function Menu() {
                     </button>
                   </div>
 
+                  {/* --- MENU SECTIONS --- */}
                   <div className="space-y-8">
+
+                    {/* Section 1: Discovery Tools (NEW) */}
+                    <div>
+                      <h4 className="font-semibold text-secondary mb-3">Discovery Tools</h4>
+                      <Link href="/explore/scare-o-meter" onClick={closeMenu}
+                        className="block rounded-md p-2 hover:bg-white/10 transition-colors"
+                      >
+                        Scare-O-Meter
+                      </Link>
+                    </div>
+
+                    {/* Section 2: Library */}
+                    <div>
+                      <h4 className="font-semibold text-secondary mb-3">Library</h4>
+                      <Link href="/reviews" onClick={closeMenu}
+                        className="block rounded-md p-2 hover:bg-white/10 transition-colors"
+                      >
+                        View All Reviews
+                      </Link>
+                    </div>
+                    
+                    {/* Section 3: By Genre */}
                     <div>
                       <h4 className="font-semibold text-secondary mb-3">By Genre</h4>
                       <div className="flex flex-wrap gap-2">
@@ -81,6 +104,7 @@ export default function Menu() {
                       </div>
                     </div>
 
+                    {/* Section 4: By Title (A-Z) */}
                     <div>
                       <h4 className="font-semibold text-secondary mb-3">By Title (A-Z)</h4>
                       <div className="flex flex-wrap gap-2">
@@ -94,14 +118,6 @@ export default function Menu() {
                       </div>
                     </div>
 
-                    <div>
-                      <h4 className="font-semibold text-secondary mb-3">Library</h4>
-                      <Link href="/reviews" onClick={closeMenu}
-                        className="block rounded-md p-2 hover:bg-white/10 transition-colors"
-                      >
-                        View All Reviews
-                      </Link>
-                    </div>
                   </div>
                 </Dialog.Panel>
               </Transition.Child>
