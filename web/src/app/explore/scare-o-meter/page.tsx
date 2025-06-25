@@ -37,7 +37,7 @@ export default async function ScareOMeterPage() {
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-heading tracking-wider">Scare-O-Meter</h1>
         <p className="text-secondary mt-2 max-w-2xl mx-auto">
-          Select a scare level on the meter below to find reviews with a matching "Boo Gauge" rating.
+          Select a scare level on the meter below to find reviews with a matching Boo Gauge rating.
         </p>
       </div>
       
