@@ -6,6 +6,8 @@ import { SanityImageSource } from '@sanity/image-url/lib/types/types'
 import ReviewGrid from '@/components/ReviewGrid'
 import type { Metadata } from 'next'
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'All Reviews | Anatomy of a Scream',
   description: 'An alphabetical list of all reviews.',
@@ -18,7 +20,7 @@ interface Review {
   moviePoster: SanityImageSource;
 }
 
-const allReviewsQuery = groq`*[_type == "review" && defined(slug.current)] | order(title asc){
+const allReviewsQuery = groq`*[_type == "review" && defined(slug.current) && defined(moviePoster)] | order(title asc){
   _id,
   title,
   slug,

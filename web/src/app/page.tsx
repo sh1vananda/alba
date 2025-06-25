@@ -15,7 +15,7 @@ interface HomePageReview {
 export const revalidate = 60;
 
 const reviewsQuery = groq`
-  *[_type == "review" && defined(slug.current) && defined(moviePoster)] | order(releaseDate desc)[0...8]{
+  *[_type == "review" && defined(slug.current) && defined(moviePoster)] | order(_createdAt desc)[0...8]{
     _id,
     title,
     slug,
