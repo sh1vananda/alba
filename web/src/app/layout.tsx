@@ -34,17 +34,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="flex flex-col min-h-screen">
           <header className="border-b border-border p-4 sticky top-0 bg-background/80 backdrop-blur-sm z-10">
             <div className="container mx-auto flex justify-between items-center gap-4">
-              <Link href="/" className="flex items-center gap-3 group">
-                <Image 
-                  src="/logo.png" 
-                  alt="Godrotted Logo" 
-                  width={32} 
-                  height={32}
-                  className="transform transition-transform duration-300 group-hover:rotate-12" 
+              <Link href="/" className="group">
+                <Image
+                  src="/godrotted.png" 
+                  alt="Godrotted Logo"
+                  width={150}
+                  height={40}
+                  className="h-11 w-auto transition-opacity duration-300 group-hover:opacity-80"
+                  priority
                 />
-                <span className="text-2xl font-heading tracking-wider group-hover:text-secondary transition-colors hidden sm:inline">
-                  Godrotted
-                </span>
               </Link>
               <div className="flex items-center gap-4">
                 <Search />
