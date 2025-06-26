@@ -23,7 +23,7 @@ export default async function Footer() {
           <div className="md:w-1/3 lg:w-1/4">
             <Link href="/" className="block mb-4">
               <Image
-                src="/godrotted-logo.svg" 
+                src="/godrotted.png" 
                 alt="Godrotted Logo"
                 width={180} 
                 height={48}  
