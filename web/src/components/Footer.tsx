@@ -21,16 +21,14 @@ export default async function Footer() {
         <div className="flex flex-col md:flex-row justify-between gap-12 mb-10">
           
           <div className="md:w-1/3 lg:w-1/4">
-            <Link href="/" className="flex items-center gap-3 mb-4">
+            <Link href="/" className="block mb-4">
               <Image
-                src="/logo.png"
-                alt="Anatomy of a Scream Logo"
-                width={28}
-                height={28}
+                src="/godrotted-logo.svg" 
+                alt="Godrotted Logo"
+                width={180} 
+                height={48}  
+                className="h-12 w-auto" 
               />
-              <span className="text-lg font-heading tracking-wider">
-                Godrotted
-              </span>
             </Link>
             <p className="text-sm text-secondary">
               In-depth reviews and analysis of horror films.
