@@ -40,7 +40,7 @@ export async function generateMetadata(
   if (!genre) return { title: "Not Found" };
   
   return {
-    title: `${genre.title} Reviews | Anatomy of a Scream`,
+    title: `${genre.title} Reviews | Godrotted`,
     description: `A collection of reviews in the ${genre.title} genre.`,
   }
 }

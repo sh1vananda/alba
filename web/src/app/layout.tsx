@@ -23,7 +23,7 @@ const bebasNeue = Bebas_Neue({
 })
 
 export const metadata: Metadata = {
-  title: 'Anatomy of a Scream',
+  title: 'Godrotted',
   description: 'Horror movie reviews',
 }
 
@@ -37,13 +37,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link href="/" className="flex items-center gap-3 group">
                 <Image 
                   src="/logo.png" 
-                  alt="Anatomy of a Scream Logo" 
+                  alt="Godrotted Logo" 
                   width={32} 
                   height={32}
                   className="transform transition-transform duration-300 group-hover:rotate-12" 
                 />
                 <span className="text-2xl font-heading tracking-wider group-hover:text-secondary transition-colors hidden sm:inline">
-                  Anatomy of a Scream
+                  Godrotted
                 </span>
               </Link>
               <div className="flex items-center gap-4">

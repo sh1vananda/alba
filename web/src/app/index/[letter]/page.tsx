@@ -21,7 +21,7 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const letter = params.letter.toUpperCase();
   return {
-    title: `Index: ${letter} | Anatomy of a Scream`,
+    title: `Index: ${letter} | Godrotted`,
     description: `A list of all reviews starting with the letter ${letter}.`,
   }
 }

@@ -7,7 +7,7 @@ import type { Metadata } from 'next'
 import ScareOMeter from '@/components/ScareOMeter'
 
 export const metadata: Metadata = {
-  title: 'Scare-O-Meter | Anatomy of a Scream',
+  title: 'Scare-O-Meter | Godrotted',
   description: 'Explore horror reviews by their Boo Gauge score.',
 }
 

@@ -9,7 +9,7 @@ import type { Metadata } from 'next'
 // export const dynamic = 'force-dynamic'; 
 
 export const metadata: Metadata = {
-  title: 'All Reviews | Anatomy of a Scream',
+  title: 'All Reviews | Godrotted',
   description: 'An alphabetical list of all reviews.',
 }
 

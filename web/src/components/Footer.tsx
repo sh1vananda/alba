@@ -29,7 +29,7 @@ export default async function Footer() {
                 height={28}
               />
               <span className="text-lg font-heading tracking-wider">
-                Anatomy of a Scream
+                Godrotted
               </span>
             </Link>
             <p className="text-sm text-secondary">
@@ -82,7 +82,7 @@ export default async function Footer() {
         </div>
 
         <div className="border-t border-border pt-8 text-center text-sm text-secondary">
-          <p>© {new Date().getFullYear()} Anatomy of a Scream. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Godrotted. All rights reserved.</p>
         </div>
       </div>
     </footer>
