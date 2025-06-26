@@ -6,7 +6,7 @@ import { SanityImageSource } from '@sanity/image-url/lib/types/types'
 import ReviewGrid from '@/components/ReviewGrid'
 import type { Metadata } from 'next'
 
-export const dynamic = 'force-dynamic';
+// export const dynamic = 'force-dynamic'; 
 
 export const metadata: Metadata = {
   title: 'All Reviews | Anatomy of a Scream',
@@ -28,7 +28,11 @@ const allReviewsQuery = groq`*[_type == "review" && defined(slug.current) && def
 }`
 
 export default async function AllReviewsPage() {
-  const reviews: Review[] = await client.fetch(allReviewsQuery);
+  const reviews: Review[] = await client.fetch(
+    allReviewsQuery, 
+    {}, 
+    { next: { revalidate: 0 } } 
+  );
 
   return (
     <div className="container mx-auto p-4 md:p-8">

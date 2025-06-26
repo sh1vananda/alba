@@ -8,7 +8,7 @@ import ScareOMeter from '@/components/ScareOMeter'
 
 export const metadata: Metadata = {
   title: 'Scare-O-Meter | Anatomy of a Scream',
-  description: 'Explore horror reviews by their "Boo Gauge" scare rating.',
+  description: 'Explore horror reviews by their Boo Gauge score.',
 }
 
 export interface ScareReview {
@@ -30,14 +30,18 @@ const allReviewsQuery = groq`
 `
 
 export default async function ScareOMeterPage() {
-  const reviews: ScareReview[] = await client.fetch(allReviewsQuery);
+  const reviews: ScareReview[] = await client.fetch(
+    allReviewsQuery,
+    {},
+    { next: { revalidate: 0 } }
+  );
 
   return (
     <div className="container mx-auto p-4 md:p-8">
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-heading tracking-wider">Scare-O-Meter</h1>
         <p className="text-secondary mt-2 max-w-2xl mx-auto">
-          Select a scare level on the meter below to find reviews with a matching Boo Gauge rating.
+          Select a scare level on the meter below to find reviews with a matching Boo Gauge score.
         </p>
       </div>
       
